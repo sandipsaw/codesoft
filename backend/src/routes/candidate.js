@@ -6,7 +6,11 @@ const router = express.Router()
 
 router.get('/applications', authMiddleware, async (req, res) => {
   try {
+    // console.log("user_id",req.user._id);
+    
     const jobs = await Job.find({ 'applications.candidateId': req.user._id })
+    // console.log("jobs",jobs);
+    
     const applications = []
 
     jobs.forEach((job) => {
@@ -27,7 +31,7 @@ router.get('/applications', authMiddleware, async (req, res) => {
         })
     })
 
-    res.json(applications)
+    res.json( applications)
   } catch (error) {
     res.status(500).json({ error: 'Unable to load applications' })
   }

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider.jsx'
 
-const API_BASE = '/api'
+const API_BASE = 'http://localhost:3000/api'
 
 export default function JobDetailPage() {
   const { id } = useParams()
@@ -61,9 +61,11 @@ export default function JobDetailPage() {
     try {
       const response = await fetch(`${API_BASE}/jobs/${id}/apply`, {
         method: 'POST',
-        headers: auth.token ? { Authorization: `Bearer ${auth.token}` } : {},
+        credentials: 'include',
         body: formData,
       })
+      
+      
       const data = await response.json()
       if (!response.ok) {
         throw new Error(data.error || 'Unable to submit application')

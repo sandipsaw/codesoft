@@ -1,13 +1,20 @@
 import express from 'express'
 import multer from 'multer'
+import uploadFile from '../Services/imagekit.service.js'
 import Job from '../models/Job.js'
-import { optionalAuth } from '../middleware/auth.js'
+import { authMiddleware, optionalAuth } from '../middleware/auth.js'
 import { sendEmail } from '../utils/mailer.js'
 
 const router = express.Router()
-const upload = multer({ dest: 'uploads/' })
+const storage = multer.memoryStorage()
+
+const upload = multer({
+   storage
+})
+
 
 router.get('/', async (req, res) => {
+  
   try {
     const search = req.query.search?.trim()
     const filter = search
@@ -28,7 +35,8 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.post('/', async (req, res) => {
+router.post('/', authMiddleware,async (req, res) => {
+
   try {
     const job = new Job(req.body)
     const savedJob = await job.save()
@@ -50,7 +58,7 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-router.post('/:id/apply', optionalAuth, upload.single('resume'), async (req, res) => {
+router.post('/:id/apply', authMiddleware , upload.single('resume'), async (req, res) => {
   try {
     const { name, email, message } = req.body
     const job = await Job.findById(req.params.id)
@@ -58,13 +66,26 @@ router.post('/:id/apply', optionalAuth, upload.single('resume'), async (req, res
       return res.status(404).json({ error: 'Job not found' })
     }
 
+   let resumePDF = null
+
+    if (req.file) {
+            const uploadedResume = await uploadFile({
+                buffer: req.file.buffer
+            });
+
+            resumePDF = {
+                url: uploadedResume.url,
+                id: uploadedResume.id
+            };
+        }
+
     const application = {
       name,
       email,
       message,
       resumeName: req.file?.originalname || '',
-      resumeUrl: req.file ? `/uploads/${req.file.filename}` : '',
-      candidateId: req.user?.id,
+      resumeUrl:resumePDF.url || '',
+      candidateId: req.user?._id,
     }
 
     job.applications.push(application)
@@ -83,7 +104,7 @@ router.post('/:id/apply', optionalAuth, upload.single('resume'), async (req, res
 
     res.json({ message: 'Application submitted', application })
   } catch (error) {
-    res.status(400).json({ error: 'Unable to submit application' })
+    res.status(400).json({ message :error.message, error: 'Unable to submit application' })
   }
 })
 

@@ -1,12 +1,12 @@
 :root {
-  --body-bg: #eef2ff;
-  --text: #0f172a;
-  --panel: #ffffff;
+  --body-bg: #ffffff;
+  --text: hsl(222, 36%, 25%);
+  --panel: #bed2ff;
   --panel-border: #e2e8f0;
   --panel-shadow: rgba(15, 23, 42, 0.06);
   --muted: #475569;
   --muted-strong: #334155;
-  --hero-start: #4f46e5;
+  --hero-start: #0a2a69;
   --hero-end: #0f172a;
   --hero-text: #f8fafc;
   --button-primary-bg: #6366f1;

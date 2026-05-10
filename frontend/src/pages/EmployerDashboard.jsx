@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import JobCard from '../components/JobCard.jsx'
 import JobForm from '../components/JobForm.jsx'
 
-const API_BASE = '/api'
+const API_BASE = 'http://localhost:3000/api'
 
 export default function EmployerDashboard() {
   const [jobs, setJobs] = useState([])
