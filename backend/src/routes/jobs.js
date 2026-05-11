@@ -92,13 +92,16 @@ router.post('/:id/apply', authMiddleware, upload.single('resume'), async (req, r
     job.applications.push(application)
     await job.save()
 
-    if (email) {
-      await transporter.sendMail({
-        from: process.env.MAIL_FROM,
-        to: email,
-        subject: `Application Received - ${job.title}`,
+    let emailSent = false
 
-        text: `
+    if (email) {
+      try {
+        const info = await transporter.sendMail({
+          from: process.env.MAIL_USER,
+          to: email,
+          subject: `Application Received - ${job.title}`,
+
+          text: `
 Hello ${name},
 
 Thank you for applying for the ${job.title} position at ${job.company}.
@@ -109,7 +112,7 @@ Best regards,
 CareerStack Team
     `,
 
-        html: `
+          html: `
       <div style="font-family: Arial, sans-serif; padding: 20px;">
         <h2 style="color: #4F46E5;">CareerStack</h2>
 
@@ -137,12 +140,15 @@ CareerStack Team
         <p><strong>TalentHub Team</strong></p>
       </div>
     `,
-      }).catch((sendError) => {
-        console.warn('Failed to send application notification', sendError)
-      })
+        })
+        emailSent = true
+        console.log('Application notification email sent:', info.messageId)
+      } catch (sendError) {
+        console.error('Failed to send application notification', sendError)
+      }
     }
 
-    //  await transporter.sendMail()
+    res.json({ message: 'Application submitted', application, emailSent })
 
     res.json({ message: 'Application submitted', application })
   } catch (error) {
