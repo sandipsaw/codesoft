@@ -4,19 +4,22 @@ import User from '../models/User.js'
 const JWT_SECRET='fc59966be7e474391e90e8c54cd80d44fecb6fbd4fb5c8a700783dd6eb7c522a' 
 
 export async function authMiddleware(req, res, next) {
-//   const authorization = req.headers.authorization;
+  const authorization = req.headers.authorization;
   
-//  if (!authorization || !authorization.startsWith('Bearer ')){
-//     return res.status(401).json({ error: 'Authentication required' })
-//   }
-
-  // const token = authorization.replace('Bearer ', '')
-  const token = req.cookies.token
-  if(!token){
-    return res.status(401).json({
-      message : "unauthorized Access"
-    })
+ if (!authorization || !authorization.startsWith('Bearer ')){
+    return res.status(401).json({ error: 'Authentication required' })
   }
+
+  const token = authorization.split(' ')[1]
+  console.log(token)
+  console.log("header",req.headers)
+  console.log("auth-->",req.headers.authorization)
+  // const token = req.cookies.token
+  // if(!token){
+  //   return res.status(401).json({
+  //     message : "unauthorized Access"
+  //   })
+  // }
   try {
     const payload = jwt.verify(token, JWT_SECRET)
     const user = await User.findById(payload.userId).select('-passwordHash')
@@ -36,8 +39,14 @@ export async function optionalAuth(req, res, next) {
   if (!authorization?.startsWith('Bearer ')) {
     return next()
   }
+  console.log(req.headers)
+  console.log(req.headers.authorization)
 
-  const token = authorization.replace('Bearer ', '')
+  // if (!authorization || !authorization.startsWith('Bearer ')){
+  //   return res.status(401).json({ error: 'Authentication required' })
+  // }
+
+  const token = authorization.split(' ')[1]
   try {
     const payload = jwt.verify(token, JWT_SECRET)
     const user = await User.findById(payload.userId).select('-passwordHash')

@@ -10,6 +10,8 @@ export default function JobForm({ onSubmit }) {
     description: '',
     requirements: '',
   })
+  console.log(job);
+  
   const [status, setStatus] = useState('')
 
   const handleChange = (event) => {
@@ -18,9 +20,13 @@ export default function JobForm({ onSubmit }) {
   }
 
   const submitJob = async (event) => {
+    console.log(event);
+    
     event.preventDefault()
     setStatus('Posting job...')
     const result = await onSubmit(job)
+    console.log(result);
+    
     if (result.success) {
       setJob({
         title: '',
@@ -81,6 +87,7 @@ export default function JobForm({ onSubmit }) {
         <button type="submit" className="button primary">Post job</button>
         {status && <span className="form-status">{status}</span>}
       </div>
+      
     </form>
   )
 }

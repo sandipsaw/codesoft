@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
+
 const AuthContext = createContext(null)
 const API_BASE = 'http://localhost:3000/api'
 
@@ -45,11 +46,14 @@ export function AuthProvider({ children }) {
         body: JSON.stringify({ email, password }),
       })
       const data = await response.json()
+
       if (!response.ok) {
         throw new Error(data.error || 'Unable to login')
       }
       setToken(data.token)
       localStorage.setItem('jobboard_token', data.token)
+      
+      
       setUser(data.user)
       setError('')
       return { success: true }
@@ -67,6 +71,7 @@ export function AuthProvider({ children }) {
         body: JSON.stringify({ name, email, password }),
       })
       const data = await response.json()
+      
       if (!response.ok) {
         throw new Error(data.error || 'Unable to register')
       }
@@ -85,6 +90,7 @@ export function AuthProvider({ children }) {
     setToken('')
     setUser(null)
     localStorage.removeItem('jobboard_token')
+    localStorage.removeItem('token')
   }
 
   const value = useMemo(

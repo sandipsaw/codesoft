@@ -23,27 +23,44 @@ export default function JobCard({ job, onApply, detailUrl }) {
     }
   }
 
+  const highlightTags = [job.location, job.type].filter(Boolean)
+
   return (
     <article className="job-card">
-      <div className="job-card-main">
+      <div className="job-card-header">
         <div>
+          <div className="job-card-topline">
+            <p className="job-company">{job.company}</p>
+            <span className="job-badge">{job.type}</span>
+          </div>
           <h3>{job.title}</h3>
-          <p className="job-company">{job.company} · {job.location}</p>
+          <p className="job-meta">{job.location}</p>
         </div>
-        <span className="job-badge">{job.type}</span>
+        <div className="job-card-value">
+          <span>{job.salary || 'Competitive'}</span>
+        </div>
       </div>
-      <p className="job-salary">{job.salary}</p>
+
+      <div className="job-card-tags">
+        {highlightTags.map((tag) => (
+          <span key={tag} className="job-chip">
+            {tag}
+          </span>
+        ))}
+      </div>
+
       <p className="job-description">{job.description}</p>
       <p className="job-requirements"><strong>Requirements:</strong> {job.requirements || 'No specific requirements listed.'}</p>
+
       <div className="job-actions">
         {detailUrl && (
-          <Link to={detailUrl} className="button secondary">
+          <Link to={detailUrl} className="button secondary outline">
             View details
           </Link>
         )}
         {onApply && (
-          <button type="button" className="button secondary" onClick={() => setShowApply((value) => !value)}>
-            {showApply ? 'Close' : 'Apply Now'}
+          <button type="button" className="button primary" onClick={() => setShowApply((value) => !value)}>
+            {showApply ? 'Close application' : 'Apply now'}
           </button>
         )}
       </div>
@@ -63,10 +80,12 @@ export default function JobCard({ job, onApply, detailUrl }) {
             Message
             <textarea name="message" value={applicant.message} onChange={handleChange} rows="4" />
           </label>
-          <button type="submit" className="button primary">
-            Submit Application
-          </button>
-          {status && <p className="form-status">{status}</p>}
+          <div className="form-actions">
+            <button type="submit" className="button primary">
+              Submit application
+            </button>
+            {status && <p className="form-status">{status}</p>}
+          </div>
         </form>
       )}
     </article>

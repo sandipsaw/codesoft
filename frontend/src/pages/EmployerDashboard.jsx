@@ -28,9 +28,14 @@ export default function EmployerDashboard() {
 
   const handleJobPost = async (job) => {
     try {
+      const token = localStorage.getItem('jobboard_token')
+
       const response = await fetch(`${API_BASE}/jobs`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(job),
       })
       const createdJob = await response.json()

@@ -12,11 +12,13 @@ export default function CandidateDashboard() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    console.log(auth.token);
     if (!auth.user) return
     setForm({ name: auth.user.name, email: auth.user.email })
     async function loadApplications() {
       try {
         setLoading(true)
+        
         const response = await fetch(`${API_BASE}/candidate/applications`, {
           headers: { Authorization: `Bearer ${auth.token}` },
         })
@@ -29,6 +31,8 @@ export default function CandidateDashboard() {
       }
     }
     loadApplications()
+    
+    
   }, [auth.user, auth.token])
 
   const handleChange = (event) => {

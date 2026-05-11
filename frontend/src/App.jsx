@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
-import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom'
+import { useState } from 'react'
+import { BrowserRouter, Link, NavLink, Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage.jsx'
 import JobListingsPage from './pages/JobListingsPage.jsx'
 import JobDetailPage from './pages/JobDetailPage.jsx'
+
 import EmployerDashboard from './pages/EmployerDashboard.jsx'
 import CandidateDashboard from './pages/CandidateDashboard.jsx'
 import LoginPage from './pages/LoginPage.jsx'
@@ -14,54 +15,69 @@ import './App.css'
 
 function AppShell() {
   const auth = useAuth()
-  const [theme, setTheme] = useState(() => {
-    if (typeof window === 'undefined') return 'light'
-    return (
-      localStorage.getItem('jobboard_theme') ||
-      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-    )
-  })
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark')
-    localStorage.setItem('jobboard_theme', theme)
-  }, [theme])
-
-  const toggleTheme = () => {
-    setTheme((current) => (current === 'dark' ? 'light' : 'dark'))
-  }
+  const closeMobileMenu = () => setMobileMenuOpen(false)
 
   return (
     <div className="app-shell">
       <header className="app-header">
-        <div>
-          <h1>Job Board</h1>
-          <p>Employer postings and candidate tools for secure job search.</p>
-        </div>
+        <div className="app-header-inner">
 
-        <nav className="site-nav">
-          <button type="button" className="button secondary nav-button theme-toggle" onClick={toggleTheme}>
-            {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+
+          <button
+            type="button"
+            className={`mobile-menu-button ${mobileMenuOpen ? 'open' : ''}`}
+            onClick={() => setMobileMenuOpen((current) => !current)}
+            aria-expanded={mobileMenuOpen}
+            aria-label="Toggle navigation menu"
+          >
+            ☰
           </button>
-          <NavLink to="/" end>
-            Home
-          </NavLink>
-          <NavLink to="/jobs">Jobs</NavLink>
-          <NavLink to="/dashboard">Employer Dashboard</NavLink>
-          {auth.user ? (
-            <>
-              <NavLink to="/candidate">My Dashboard</NavLink>
-              <button type="button" className="button secondary nav-button" onClick={auth.logout}>
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <NavLink to="/login">Login</NavLink>
-              <NavLink to="/register">Register</NavLink>
-            </>
-          )}
-        </nav>
+
+          <nav className={`site-nav ${mobileMenuOpen ? 'open' : ''}`}>
+            <Link to="/" className="brand-logo" onClick={closeMobileMenu}>
+
+              <div className="brand-copy">
+                <span className="brand-text">TalentHub</span>
+                <span className="brand-tagline">Find your next dream role</span>
+              </div>
+            </Link>
+
+            
+            <NavLink to="/" end onClick={closeMobileMenu}>
+              Home
+            </NavLink>
+            <NavLink to="/jobs" onClick={closeMobileMenu}>
+              Jobs
+            </NavLink>
+            <NavLink to="/dashboard" onClick={closeMobileMenu}>
+              Employer Dashboard
+            </NavLink>
+            {auth.user ? (
+              <>
+                <NavLink to="/candidate" onClick={closeMobileMenu}>
+                  My Dashboard
+                </NavLink>
+                <button type="button" className="button secondary nav-button" onClick={() => {
+                  auth.logout()
+                  closeMobileMenu()
+                }}>
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <NavLink to="/login" onClick={closeMobileMenu}>
+                  Login
+                </NavLink>
+                <NavLink to="/register" onClick={closeMobileMenu}>
+                  Register
+                </NavLink>
+              </>
+            )}
+          </nav>
+        </div>
       </header>
 
       <main className="page-layout">
