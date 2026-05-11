@@ -97,7 +97,7 @@ router.post('/:id/apply', authMiddleware, upload.single('resume'), async (req, r
     if (email) {
       try {
         const info = await transporter.sendMail({
-          from: process.env.MAIL_USER,
+          from: process.env.MAIL_FROM,
           to: email,
           subject: `Application Received - ${job.title}`,
 
@@ -149,8 +149,6 @@ CareerStack Team
     }
 
     res.json({ message: 'Application submitted', application, emailSent })
-
-    res.json({ message: 'Application submitted', application })
   } catch (error) {
     res.status(400).json({ message: error.message, error: 'Unable to submit application' })
   }
