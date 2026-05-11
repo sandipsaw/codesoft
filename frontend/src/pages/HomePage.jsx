@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import JobCard from '../components/JobCard.jsx'
 import heroImage from '../assets/employee.jpg'
 
-const API_BASE = 'http://localhost:3000/api'
+const API_BASE = import.meta.env.VITE_API_URL
 
 export default function HomePage() {
   const [featured, setFeatured] = useState([])

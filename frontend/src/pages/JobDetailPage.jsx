@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider.jsx'
 
-const API_BASE = 'http://localhost:3000/api'
+const API_BASE = import.meta.env.VITE_API_URL
 
 export default function JobDetailPage() {
   const { id } = useParams()
