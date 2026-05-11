@@ -17,7 +17,7 @@ export default function RegisterPage() {
     event.preventDefault()
     const result = await auth.register(profile)
     if (result.success) {
-      navigate('/candidate')
+      navigate('/login')
     } else {
       setStatus(result.message)
     }

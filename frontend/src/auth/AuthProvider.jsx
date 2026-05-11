@@ -71,13 +71,10 @@ export function AuthProvider({ children }) {
         body: JSON.stringify({ name, email, password }),
       })
       const data = await response.json()
-      
+
       if (!response.ok) {
         throw new Error(data.error || 'Unable to register')
       }
-      setToken(data.token)
-      localStorage.setItem('jobboard_token', data.token)
-      setUser(data.user)
       setError('')
       return { success: true }
     } catch (err) {
