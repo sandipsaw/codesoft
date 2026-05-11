@@ -75,6 +75,9 @@ export function AuthProvider({ children }) {
       if (!response.ok) {
         throw new Error(data.error || 'Unable to register')
       }
+      setToken('')
+      setUser(null)
+      localStorage.removeItem('jobboard_token')
       setError('')
       return { success: true }
     } catch (err) {
