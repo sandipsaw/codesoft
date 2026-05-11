@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import JobCard from '../components/JobCard.jsx'
 import JobForm from '../components/JobForm.jsx'
 
-const API_BASE = import.meta.env.VITE_API_URL
+const API_BASE = 'https://codesoft-2fak.onrender.com/api'
 
 export default function EmployerDashboard() {
   const [jobs, setJobs] = useState([])

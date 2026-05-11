@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import JobCard from '../components/JobCard.jsx'
 
-const API_BASE = import.meta.env.VITE_API_URL
+const API_BASE = 'https://codesoft-2fak.onrender.com/api'
 
 export default function JobListingsPage() {
   const [jobs, setJobs] = useState([])

@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 
 const AuthContext = createContext(null)
-const API_BASE = import.meta.env.VITE_API_URL
+const API_BASE = 'https://codesoft-2fak.onrender.com/api'
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
