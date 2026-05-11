@@ -3,29 +3,30 @@ import multer from 'multer'
 import uploadFile from '../Services/imagekit.service.js'
 import Job from '../models/Job.js'
 import { authMiddleware, optionalAuth } from '../middleware/auth.js'
-import { sendEmail } from '../utils/mailer.js'
+// import { sendEmail } from '../utils/mailer.js'
+import transporter from '../Services/nodemailer.service.js'
 
 const router = express.Router()
 const storage = multer.memoryStorage()
 
 const upload = multer({
-   storage
+  storage
 })
 
 
 router.get('/', async (req, res) => {
-  
+
   try {
     const search = req.query.search?.trim()
     const filter = search
       ? {
-          $or: [
-            { title: new RegExp(search, 'i') },
-            { company: new RegExp(search, 'i') },
-            { location: new RegExp(search, 'i') },
-            { description: new RegExp(search, 'i') },
-          ],
-        }
+        $or: [
+          { title: new RegExp(search, 'i') },
+          { company: new RegExp(search, 'i') },
+          { location: new RegExp(search, 'i') },
+          { description: new RegExp(search, 'i') },
+        ],
+      }
       : {}
 
     const jobs = await Job.find(filter).sort({ createdAt: -1 })
@@ -35,7 +36,7 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.post('/', authMiddleware,async (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
 
   try {
     const job = new Job(req.body)
@@ -58,7 +59,7 @@ router.get('/:id', async (req, res) => {
   }
 })
 
-router.post('/:id/apply', authMiddleware , upload.single('resume'), async (req, res) => {
+router.post('/:id/apply', authMiddleware, upload.single('resume'), async (req, res) => {
   try {
     const { name, email, message } = req.body
     const job = await Job.findById(req.params.id)
@@ -66,25 +67,25 @@ router.post('/:id/apply', authMiddleware , upload.single('resume'), async (req, 
       return res.status(404).json({ error: 'Job not found' })
     }
 
-   let resumePDF = null
+    let resumePDF = null
 
     if (req.file) {
-            const uploadedResume = await uploadFile({
-                buffer: req.file.buffer
-            });
+      const uploadedResume = await uploadFile({
+        buffer: req.file.buffer
+      });
 
-            resumePDF = {
-                url: uploadedResume.url,
-                id: uploadedResume.id
-            };
-        }
+      resumePDF = {
+        url: uploadedResume.url,
+        id: uploadedResume.id
+      };
+    }
 
     const application = {
       name,
       email,
       message,
       resumeName: req.file?.originalname || '',
-      resumeUrl:resumePDF.url || '',
+      resumeUrl: resumePDF.url || '',
       candidateId: req.user?._id,
     }
 
@@ -92,19 +93,60 @@ router.post('/:id/apply', authMiddleware , upload.single('resume'), async (req, 
     await job.save()
 
     if (email) {
-      await sendEmail({
+      await transporter.sendMail({
+        from: process.env.MAIL_FROM,
         to: email,
-        subject: 'Application received',
-        text: `Thank you for applying to ${job.title} at ${job.company}. Your application has been received.`,
-        html: `<p>Thank you for applying to <strong>${job.title}</strong> at <strong>${job.company}</strong>.</p><p>Your application has been received and will be reviewed shortly.</p>`,
+        subject: `Application Received - ${job.title}`,
+
+        text: `
+Hello ${name},
+
+Thank you for applying for the ${job.title} position at ${job.company}.
+
+We have successfully received your application and our team will review it shortly.
+
+Best regards,
+CareerStack Team
+    `,
+
+        html: `
+      <div style="font-family: Arial, sans-serif; padding: 20px;">
+        <h2 style="color: #4F46E5;">CareerStack</h2>
+
+        <p>Hello <strong>${name}</strong>,</p>
+
+        <p>
+          Thank you for applying for the
+          <strong>${job.title}</strong> position at
+          <strong>${job.company}</strong>.
+        </p>
+
+        <p>
+          We have successfully received your application and our hiring team
+          will review it shortly.
+        </p>
+
+        <p>
+          We appreciate your interest in joining
+          <strong>${job.company}</strong>.
+        </p>
+
+        <br />
+
+        <p>Best regards,</p>
+        <p><strong>TalentHub Team</strong></p>
+      </div>
+    `,
       }).catch((sendError) => {
         console.warn('Failed to send application notification', sendError)
       })
     }
 
+    //  await transporter.sendMail()
+
     res.json({ message: 'Application submitted', application })
   } catch (error) {
-    res.status(400).json({ message :error.message, error: 'Unable to submit application' })
+    res.status(400).json({ message: error.message, error: 'Unable to submit application' })
   }
 })
 
