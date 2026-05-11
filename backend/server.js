@@ -3,22 +3,16 @@ dotenv.config()
 import cookieParser from 'cookie-parser'
 import fs from 'fs'
 import express from 'express'
-import connectToDb from './src/db/db.js' 
+import connectToDb from './src/db/db.js'
 import cors from 'cors'
-import mongoose from 'mongoose'
 import jobsRouter from './src/routes/jobs.js'
 import authRouter from './src/routes/auth.js'
 import candidateRouter from './src/routes/candidate.js'
 
 const app = express()
 
-connectToDb()
-
-app.listen(3000,()=>{
-  console.log("server is running on port 3000");
-})
-const PORT = process.env.PORT || 4000
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/jobboard'
+const PORT = process.env.PORT || 3000
+const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/jobboard'
 
 // const uploadsDir = './uploads'
 
@@ -31,7 +25,7 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use(cors({
-    origin: ['https://talenthub-ebon.vercel.app/','http://localhost:5173'],
+    origin: ['https://talenthub-ebon.vercel.app', 'http://localhost:5173', 'https://codesoft-2fak.onrender.com'],
     credentials: true
 }));
 
@@ -43,6 +37,20 @@ app.use('/api/jobs', jobsRouter)
 app.get('/', (req, res) => {
   res.send({ message: 'Job Board API is running' })
 })
+
+async function startServer() {
+  try {
+    await connectToDb(MONGO_URI)
+    app.listen(PORT, () => {
+      console.log(`server is running on port ${PORT}`)
+    })
+  } catch (error) {
+    console.error('Failed to start server', error)
+    process.exit(1)
+  }
+}
+
+startServer()
 
 // const notes = [] 
 
