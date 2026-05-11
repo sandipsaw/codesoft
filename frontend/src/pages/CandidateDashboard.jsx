@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../auth/AuthProvider.jsx'
 import { Link } from 'react-router-dom'
 
-const API_BASE = 'http://localhost:3000/api'
+const API_BASE = import.meta.env.VITE_API_URL
 
 export default function CandidateDashboard() {
   const auth = useAuth()
