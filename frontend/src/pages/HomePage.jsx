@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import JobCard from '../components/JobCard.jsx'
 import heroImage from '../assets/employee.jpg'
-
 const API_BASE = 'https://codesoft-2fak.onrender.com/api'
 
 export default function HomePage() {

@@ -35,7 +35,7 @@ app.use(cookieParser())
 app.use(cors({
   origin: [
     'https://talenthub-ebon.vercel.app',
-    'https://talent-hub247.vercel.app',
+    'https://codesoft-2fak.onrender.com/api/',
     'http://localhost:5173'
   ],
   credentials: true
