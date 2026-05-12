@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider.jsx'
-
 import SpinnerLoader from '../components/SpinnerLoader.jsx'
+import { toast } from 'react-toastify'
 
 const API_BASE = 'https://codesoft-2fak.onrender.com/api'
 
@@ -78,6 +78,7 @@ export default function JobDetailPage() {
       if (!response.ok) {
         throw new Error(data.error || 'Unable to submit application')
       }
+      toast.success("Application Submit successfully✅")
       setStatus('Application submitted successfully.')
       setSubmitting(false)
 

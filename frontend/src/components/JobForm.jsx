@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { toast } from 'react-toastify';
 
 export default function JobForm({ onSubmit }) {
   const [job, setJob] = useState({
@@ -37,6 +38,7 @@ export default function JobForm({ onSubmit }) {
         description: '',
         requirements: '',
       })
+      toast.success("Job post successfully")
       setStatus('Job posted successfully!')
     } else {
       setStatus('Unable to post job. Please try again.')

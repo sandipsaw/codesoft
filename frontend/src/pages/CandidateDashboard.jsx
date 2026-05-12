@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../auth/AuthProvider.jsx'
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 const API_BASE = 'https://codesoft-2fak.onrender.com/api'
 
@@ -55,6 +56,7 @@ export default function CandidateDashboard() {
       if (!response.ok) {
         throw new Error(data.error || 'Unable to update profile')
       }
+      toast.success("Profile Updates successfully")
       setMessage('Profile updated successfully.')
     } catch (error) {
       setMessage(error.message)

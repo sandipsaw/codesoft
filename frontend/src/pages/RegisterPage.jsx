@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider.jsx'
+import { toast } from 'react-toastify'
 
 export default function RegisterPage() {
   const auth = useAuth()
@@ -17,6 +18,7 @@ export default function RegisterPage() {
     event.preventDefault()
     const result = await auth.register(profile)
     if (result.success) {
+      toast.success("Account Created")
       navigate('/login')
     } else {
       setStatus(result.message)

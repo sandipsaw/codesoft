@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider.jsx'
+import { toast } from 'react-toastify'
 
 export default function LoginPage() {
   const auth = useAuth()
@@ -17,7 +18,8 @@ export default function LoginPage() {
     event.preventDefault()
     const result = await auth.login(credentials)
     if (result.success) {
-      navigate('/candidate')
+      toast.success('Login successfull')
+        navigate('/candidate')
     } else {
       setStatus(result.message)
     }
