@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthProvider.jsx'
 
+import SpinnerLoader from '../components/SpinnerLoader.jsx'
+
 const API_BASE = 'https://codesoft-2fak.onrender.com/api'
 
 export default function JobDetailPage() {
@@ -9,6 +11,7 @@ export default function JobDetailPage() {
   const auth = useAuth()
   const [job, setJob] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [applicant, setApplicant] = useState({ name: '', email: '', message: '' })
   const [resume, setResume] = useState(null)
@@ -47,6 +50,7 @@ export default function JobDetailPage() {
   }
 
   const submitApplication = async (event) => {
+    setSubmitting(true)
     event.preventDefault()
     setStatus('Sending application...')
 
@@ -75,12 +79,16 @@ export default function JobDetailPage() {
         throw new Error(data.error || 'Unable to submit application')
       }
       setStatus('Application submitted successfully.')
+      setSubmitting(false)
+
       setApplicant({ name: auth.user?.name || '', email: auth.user?.email || '', message: '' })
       setResume(null)
     } catch (err) {
       setStatus(err.message)
+      setSubmitting(false)
     }
   }
+
 
   if (loading) {
     return (
@@ -98,9 +106,11 @@ export default function JobDetailPage() {
     )
   }
 
+
   return (
     <div className="page-content">
       <section className="job-detail-card">
+         <div className="loader-container">{submitting && <SpinnerLoader />}</div>
         <div className="job-detail-header">
           <div>
             <span className="eyebrow">{job.company}</span>

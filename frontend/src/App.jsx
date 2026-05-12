@@ -34,6 +34,7 @@ function AppShell() {
           >
             ☰
           </button>
+          
 
           <nav className={`site-nav ${mobileMenuOpen ? 'open' : ''}`}>
             <Link to="/" className="brand-logo" onClick={closeMobileMenu}>
