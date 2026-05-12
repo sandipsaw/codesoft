@@ -39,10 +39,6 @@ The project is designed with a modern and responsive user interface to provide a
 <img width="942" height="626" alt="Screenshot 2026-05-12 191128" src="https://github.com/user-attachments/assets/85f4d139-8a8a-47ae-8356-c341d3c53be5" />
 
 
-### Apply Job Form
-<img width="628" height="570" alt="Screenshot 2026-05-12 191016" src="https://github.com/user-attachments/assets/5a744941-cf56-4150-8635-cc1d65a3d992" />
-
-
 ### Dashboard Page
 <img width="901" height="635" alt="Screenshot 2026-05-12 185747" src="https://github.com/user-attachments/assets/7c321436-f0f8-4ad2-a90e-744a2fc42f10" />
 
