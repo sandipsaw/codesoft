@@ -1,4 +1,4 @@
-<img width="628" height="570" alt="image" src="https://github.com/user-attachments/assets/c844b1f5-246e-4f67-89e3-f53d441a98d2" /># Talent Hub 🚀
+# Talent Hub 🚀
 
 Talent Hub is a full-stack job board web application that connects recruiters and job seekers on a single platform. Recruiters can post and manage job opportunities, while candidates can explore jobs and apply by uploading their resumes.
 
