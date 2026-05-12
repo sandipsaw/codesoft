@@ -111,7 +111,7 @@ export default function JobDetailPage() {
   return (
     <div className="page-content">
       <section className="job-detail-card">
-         <div className="loader-container">{submitting && <SpinnerLoader />}</div>
+         {/* <div className="loader-container">{submitting && <SpinnerLoader />}</div> */}
         <div className="job-detail-header">
           <div>
             <span className="eyebrow">{job.company}</span>
