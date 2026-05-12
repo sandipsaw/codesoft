@@ -18,6 +18,7 @@ export default function JobDetailPage() {
     async function loadJob() {
       try {
         setLoading(true)
+
         const response = await fetch(`${API_BASE}/jobs/${id}`)
         if (!response.ok) {
           const errorData = await response.json()
@@ -61,6 +62,10 @@ export default function JobDetailPage() {
     try {
       const token = localStorage.getItem('jobboard_token')
 
+      console.log(applicant)
+      console.log(token)
+      console.log(resume)
+
       const response = await fetch(`${API_BASE}/jobs/${id}/apply`, {
         method: 'POST',
         headers: {
@@ -69,8 +74,11 @@ export default function JobDetailPage() {
         body: formData,
       })
 
+      console.log('Submitting form...')
+      console.log(applicant)
 
       const data = await response.json()
+      console.log(data)
       if (!response.ok) {
         throw new Error(data.error || 'Unable to submit application')
       }

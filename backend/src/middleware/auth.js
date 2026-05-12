@@ -1,7 +1,10 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
 import jwt from 'jsonwebtoken'
 import User from '../models/User.js'
 
-const JWT_SECRET='fc59966be7e474391e90e8c54cd80d44fecb6fbd4fb5c8a700783dd6eb7c522a' 
+const JWT_SECRET=process.env.JWT_SECRET 
 
 export async function authMiddleware(req, res, next) {
   const authorization = req.headers.authorization;
@@ -11,9 +14,9 @@ export async function authMiddleware(req, res, next) {
   }
 
   const token = authorization.split(' ')[1]
-  console.log(token)
-  console.log("header",req.headers)
-  console.log("auth-->",req.headers.authorization)
+  // console.log(token)
+  // console.log("header",req.headers)
+  // console.log("auth-->",req.headers.authorization)
   // const token = req.cookies.token
   // if(!token){
   //   return res.status(401).json({

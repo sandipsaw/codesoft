@@ -1,9 +1,12 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
 import express from 'express'
 import multer from 'multer'
 import uploadFile from '../Services/imagekit.service.js'
 import Job from '../models/Job.js'
-import { authMiddleware, optionalAuth } from '../middleware/auth.js'
-// import { sendEmail } from '../utils/mailer.js'
+import { authMiddleware } from '../middleware/auth.js'
+
 import transporter from '../Services/nodemailer.service.js'
 
 const router = express.Router()
@@ -62,96 +65,117 @@ router.get('/:id', async (req, res) => {
 router.post('/:id/apply', authMiddleware, upload.single('resume'), async (req, res) => {
   try {
     const { name, email, message } = req.body
+
     const job = await Job.findById(req.params.id)
+
     if (!job) {
       return res.status(404).json({ error: 'Job not found' })
     }
 
-    let resumePDF = null
-
-    if (req.file) {
-      const uploadedResume = await uploadFile({
-        buffer: req.file.buffer
-      });
-
-      resumePDF = {
-        url: uploadedResume.url,
-        id: uploadedResume.id
-      };
+    let resumePDF = {
+      url: '',
+      id: ''
     }
+
+    // Upload resume
+    if (req.file) {
+      try {
+        const uploadedResume = await uploadFile({
+          buffer: req.file.buffer
+        })
+
+        resumePDF = {
+          url: uploadedResume.url,
+          id: uploadedResume.id
+        }
+
+      } catch (uploadError) {
+        console.log('Resume upload failed:', uploadError)
+      }
+    }
+    console.log(req.body)
+    console.log(req.file)
+    console.log(email)
 
     const application = {
       name,
       email,
       message,
       resumeName: req.file?.originalname || '',
-      resumeUrl: resumePDF.url || '',
+      resumeUrl: resumePDF.url,
       candidateId: req.user?._id,
     }
 
     job.applications.push(application)
+
     await job.save()
 
-    let emailSent = false
+    // FAST RESPONSE
+    res.json({
+      message: 'Application submitted successfully',
+      application
+    })
 
+    // EMAIL IN BACKGROUND
     if (email) {
-      try {
-        const info = await transporter.sendMail({
-          from: process.env.MAIL_FROM,
-          to: email,
-          subject: `Application Received - ${job.title}`,
+      console.log('Before sending email')
 
-          text: `
+      transporter.sendMail({
+        from: process.env.MAIL_FROM,
+        to: email,
+
+        subject: `Application Received - ${job.title}`,
+
+        text: `
 Hello ${name},
 
 Thank you for applying for the ${job.title} position at ${job.company}.
 
-We have successfully received your application and our team will review it shortly.
+We have successfully received your application.
 
 Best regards,
-CareerStack Team
+TalentHub Team
     `,
 
-          html: `
-      <div style="font-family: Arial, sans-serif; padding: 20px;">
-        <h2 style="color: #4F46E5;">CareerStack</h2>
+        html: `
+<div style="font-family: Arial; padding:20px">
+  <h2>TalentHub</h2>
 
-        <p>Hello <strong>${name}</strong>,</p>
+  <p>Hello <strong>${name}</strong>,</p>
 
-        <p>
-          Thank you for applying for the
-          <strong>${job.title}</strong> position at
-          <strong>${job.company}</strong>.
-        </p>
+  <p>
+    Thank you for applying for
+    <strong>${job.title}</strong> at
+    <strong>${job.company}</strong>.
+  </p>
 
-        <p>
-          We have successfully received your application and our hiring team
-          will review it shortly.
-        </p>
+  <p>Your application has been received successfully.</p>
 
-        <p>
-          We appreciate your interest in joining
-          <strong>${job.company}</strong>.
-        </p>
+  <br/>
 
-        <br />
-
-        <p>Best regards,</p>
-        <p><strong>TalentHub Team</strong></p>
-      </div>
-    `,
+  <p>Best regards,</p>
+  <p><strong>TalentHub Team</strong></p>
+</div>
+    `
+      })
+        .then((info) => {
+          console.log('Email sent successfully')
+          console.log(info.messageId)
         })
-        emailSent = true
-        console.log('Application notification email sent:', info.messageId)
-      } catch (sendError) {
-        console.error('Failed to send application notification', sendError)
-      }
+        .catch((err) => {
+          console.log('Email sending failed')
+          console.log(err)
+        })
+
+      console.log('After sending email')
     }
 
-    res.json({ message: 'Application submitted', application, emailSent })
   } catch (error) {
-    res.status(400).json({ message: error.message, error: 'Unable to submit application' })
+    console.log(error)
+
+    res.status(500).json({
+      error: 'Unable to submit application'
+    })
   }
 })
-
 export default router
