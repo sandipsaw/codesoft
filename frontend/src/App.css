@@ -64,7 +64,7 @@ body::before {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-left: 25px;
+  padding-left: 5px;
 }
 
 /* Mobile & tablet view */
