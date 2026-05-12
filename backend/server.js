@@ -32,7 +32,14 @@ app.use(cookieParser())
 //     credentials: true
 // }));
 
-app.use(cors())
+app.use(cors({
+  origin: [
+    'https://talenthub-ebon.vercel.app',
+    'https://talent-hub247.vercel.app',
+    'http://localhost:5173'
+  ],
+  credentials: true
+}))
 
 // app.use('/uploads', express.static(uploadsDir))
 app.use('/api/auth', authRouter)
