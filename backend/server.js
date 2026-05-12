@@ -24,14 +24,15 @@ const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb:/
 app.use(express.json())
 app.use(cookieParser())
 
-app.use(cors({
-    origin: [
-      'https://talent-hub247.vercel.app', 
-      'http://localhost:5173', 
-      'https://codesoft-2fak.onrender.com'
-    ],
-    credentials: true
-}));
+// app.use(cors({
+//     origin: [
+//       'https://talent-hub247.vercel.app', 
+//       'http://localhost:5173', 
+//       'https://codesoft-2fak.onrender.com'],
+//     credentials: true
+// }));
+
+app.use(cors())
 
 // app.use('/uploads', express.static(uploadsDir))
 app.use('/api/auth', authRouter)
