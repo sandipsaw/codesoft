@@ -3,7 +3,7 @@ import { BrowserRouter, Link, NavLink, Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage.jsx'
 import JobListingsPage from './pages/JobListingsPage.jsx'
 import JobDetailPage from './pages/JobDetailPage.jsx'
-
+import { FcBriefcase } from "react-icons/fc";
 import EmployerDashboard from './pages/EmployerDashboard.jsx'
 import CandidateDashboard from './pages/CandidateDashboard.jsx'
 import LoginPage from './pages/LoginPage.jsx'
@@ -23,8 +23,10 @@ function AppShell() {
     <div className="app-shell">
       <header className="app-header">
         <div className="app-header-inner">
-
-
+          <div className='combo'>
+            <div className='header-logo'><FcBriefcase/></div>
+          <h1 className='header-name'> JOB BOARD</h1>
+          </div>
           <button
             type="button"
             className={`mobile-menu-button ${mobileMenuOpen ? 'open' : ''}`}
@@ -34,7 +36,6 @@ function AppShell() {
           >
             ☰
           </button>
-          
 
           <nav className={`site-nav ${mobileMenuOpen ? 'open' : ''}`}>
             <Link to="/" className="brand-logo" onClick={closeMobileMenu}>
